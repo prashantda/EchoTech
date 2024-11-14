@@ -1,0 +1,17 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/EcoTech.API/.vs/EcoTech.API
+/EcoTech.API/EcoTech.API/obj
+/EcoTech.API/EcoTech.API/bin/Debug/net8.0
+/EcoTech.API/EcoTech.Application/bin/Debug/net8.0
+/EcoTech.API/EcoTech.Application/obj
+/EcoTech.API/EcoTech.Domain/bin/Debug/net8.0
+/EcoTech.API/EcoTech.Domain/obj
+/EcoTech.API/EcoTech.Infrastructure/bin/Debug/net8.0
+/EcoTech.API/EcoTech.Infrastructure/obj
+/EcoTech.API/.vs/ProjectEvaluation
+/EcoTech.API/EcoTech.Shared/bin/Debug/net8.0
+/EcoTech.API/EcoTech.Shared/obj
