@@ -34,6 +34,7 @@ internal class UserRepository : GenericRepository, IUserRepository
         return (OtpSpResponse)response[1][0];
     }
 
+
     public async ValueTask<SignUpSpResponse> SignUpUser(SignUpSpRequest spRequest)
     {
         DomainAppConstants.SpResponse[] returnObjects = [DomainAppConstants.SpResponse.SignUpSpResponse];

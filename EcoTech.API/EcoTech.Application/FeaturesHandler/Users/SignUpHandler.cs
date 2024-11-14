@@ -19,7 +19,7 @@ public class SignUpHandler : IRequestHandler<SignUpRequestDto, Response<SignUpRe
     }
     public async ValueTask<Response<SignUpResponseDto>> Handle(SignUpRequestDto request, CancellationToken cancellationToken)
     {
-        SignUpSpRequest spRequest = _mapper.Map(request);
+        SignUpSpRequest spRequest =request;
         SignUpSpResponse spResponse = await _userRepository.SignUpUser(spRequest);
         return new(new(spResponse.Message),isSuccess: spResponse.Result);
     }

@@ -99,6 +99,8 @@ public static class AppConstants
     public const string MustWithinValuesErrorMessage = "The value for {0} must be one of the following:\r\n {1}";
     public const string MobileOrEmailRegex = @"^[6-9]\d{9}$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
     public const string MobileOrEmailErrorMessage = "Please enetr valid Mobile number or Email";
+    public const string Verification = "Verification";
+    public const string Login = "Login";
 
 
 

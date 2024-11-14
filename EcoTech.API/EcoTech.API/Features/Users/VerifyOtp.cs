@@ -6,6 +6,7 @@ public class VerifyOtp : Endpoint<VerifyOtpRequestDto, Response<VerifyOtpRespons
     public override void Configure()
     {
         Post(AppConstants.VerifyOtpURL);
+        AllowAnonymous();
         Validator<VerifyOtpRequestDtoValidator>();
         Throttle(hitLimit: 3, durationSeconds: 60);
     }

@@ -1,7 +1,7 @@
 ﻿
 namespace EcoTech.Domain.FeatureEntities;
 
-public class SignUpRequestDto : SignUp, IRequest<Response<SignUpResponseDto>>;
+public class SignUpRequestDto : SignUpSpRequest, IRequest<Response<SignUpResponseDto>>;
 
 public record struct SignUpResponseDto(string Message);
 

@@ -1,4 +1,5 @@
 ﻿
+using EcoTech.Domain.Entities;
 using EcoTech.Domain.FeatureEntities;
 
 namespace EcoTech.Application.FeaturesHandler.Users;
@@ -7,27 +8,31 @@ public class VerifyOtpHandler : IRequestHandler<VerifyOtpRequestDto, Response<Ve
 {
 
     private readonly IAuthService _authService;
+    private readonly IUserRepository _userRepository;
 
-    public VerifyOtpHandler(IAuthService authService)
+    public VerifyOtpHandler(IAuthService authService,IUserRepository userRepository)
     {
         _authService = authService;
+        _userRepository = userRepository;
     }
-    public ValueTask<Response<VerifyOtpResponseDto>> Handle(VerifyOtpRequestDto request, CancellationToken cancellationToken)
+    public async ValueTask<Response<VerifyOtpResponseDto>> Handle(VerifyOtpRequestDto request, CancellationToken cancellationToken)
     {
-        AppUser appUser = _authService.GetAppUser();
-        string tempJwtToken=string.Empty;
-        if (appUser.Claims.TryGetValue(JwtRegisteredClaimNames.Sub,out string? encryptedOtp))
+        string jwtToken=string.Empty;
+        OtpSpResponse response = await _userRepository.ManageOtp(request.Contact, request.Otp, SpConstants.Verify);
+
+
+        if (request.Purpose.Equals(AppConstants.Verification))
         {
-             tempJwtToken = request.Otp.Equals(_authService.DecryptString(encryptedOtp))?
-                               _authService.CreateJwtToken(20, [AppConstants.EncryptedGroupAdminRole,AppConstants.EncryptedUserRole]):
-                               string.Empty;
+            return new(new(response.Result, response.Message));
         }
-        if (string.IsNullOrWhiteSpace(tempJwtToken))
+        else if (response.Result && request.Purpose.Equals(AppConstants.Login))
         {
-            return ValueTask.FromResult<Response<VerifyOtpResponseDto>>(new(
-                new(false,string.Empty),message:AppConstants.OtpInvalidMessage,isSuccess:false));
+
+            jwtToken= _authService.CreateJwtToken(20, [AppConstants.EncryptedGroupAdminRole, AppConstants.EncryptedUserRole]);
+
+           // return (new(new(false,string.Empty),message:AppConstants.OtpInvalidMessage,isSuccess:false));
         }
-        return ValueTask.FromResult<Response<VerifyOtpResponseDto>>(new(new(true,tempJwtToken)));
+        return new(new(true, jwtToken));
     }
 
 
