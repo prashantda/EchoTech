@@ -18,28 +18,46 @@ internal class UserRepository : GenericRepository, IUserRepository
     {
         DomainAppConstants.SpResponse[] returnObjects = [DomainAppConstants.SpResponse.AvailableUserSpResponse];
         var response = await ExecuteSpToObjects(SpConstants.USP_Check_User_Availability, returnObjects: returnObjects, spEntity: spRequest);
-        return (AvailableUserSpResponse)response[1][0];
+        return (AvailableUserSpResponse)response[0][0];
     }
 
     public async ValueTask<OtpSpResponse> ManageOtp(string contact, string otp, string operation)
     {
-        OtpSpRequest dbRequest = new()
+        OtpSpRequest spRequest = new()
         {
             Contact = contact,
             Otp = otp,
             Operation = operation
         };
         DomainAppConstants.SpResponse[] returnObjects = [DomainAppConstants.SpResponse.OtpSpResponse];
-        var response = await ExecuteSpToObjects(SpConstants.USP_Manage_OTP, returnObjects: returnObjects, spEntity: dbRequest);
-        return (OtpSpResponse)response[1][0];
+        var response = await ExecuteSpToObjects(SpConstants.USP_Manage_OTP, returnObjects: returnObjects, spEntity: spRequest);
+        return (OtpSpResponse)response[0][0];
     }
 
+    public async ValueTask<List<IDbResponse>[]> VerifyOtp(OtpSpRequest spRequest)
+    {
+        DomainAppConstants.SpResponse[] returnObjects;
+
+        if (spRequest.Purpose.Equals(AppConstants.Login))
+        {
+            returnObjects = [DomainAppConstants.SpResponse.OtpSpResponse,
+                DomainAppConstants.SpResponse.RolesSpResponse];
+        }
+        else
+        {
+            returnObjects = [DomainAppConstants.SpResponse.OtpSpResponse];
+        }
+        return await ExecuteSpToObjects(SpConstants.USP_Manage_OTP, returnObjects: returnObjects, spEntity: spRequest);
+    }
+
+
+    
 
     public async ValueTask<SignUpSpResponse> SignUpUser(SignUpSpRequest spRequest)
     {
         DomainAppConstants.SpResponse[] returnObjects = [DomainAppConstants.SpResponse.SignUpSpResponse];
         var response = await ExecuteSpToObjects(SpConstants.USP_Client_SignUp, returnObjects: returnObjects, spEntity: spRequest);
-        return (SignUpSpResponse)response[1][0];
+        return (SignUpSpResponse)response[0][0];
     }
 }
 

@@ -29,11 +29,22 @@ public static class AppConstants
     public const string ApplicationEnvironmentVaraible="ASPNETCORE_ENVIRONMENT";
     public const string ProductionEnvironment="Production";
     public const string UATEnvironment="UAT";
+    public const string DevelopmentEnvironment="Development";
     public const string UniqueId = "UniqueId";
     public static string JwtSigningKey { get; } = Guid.NewGuid().ToString("N");
     public static byte[] DynamicEncryptionKey { get; } = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N"));
     public static byte[] DynamicEncryptionIV { get; } = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString("N").Substring(0, 16));
+    public static string SQL_FILE_PATH { get; set; } = default!;
     #endregion
+
+    #region Environment Variables
+    public static string EchoTechServerEnvironmentName = "EchoTechServer";
+    public static string EchoTechDataBaseEnvironmentName = "EchoTechDataBase";
+    public static string EchoTechUserIdEnvironmentName = "EchoTechUserId";
+    public static string EchoTechPasswordEnvironmentName = "EchoTechPassword";
+    public const string GenericConnectionString= "Data Source={0}; Initial Catalog={1};User ID={2};Password={3};Connect Timeout=30; Encrypt=False;TrustServerCertificate=True;";
+    #endregion
+
 
     #region Types of files and Request
     public const string JsonRequestType = "application/json";
@@ -52,13 +63,16 @@ public static class AppConstants
     #region Roles
     public const string Role = "Role";
     public const string LeadRole = "Lead";
-    public const string UserRole = "User";
-    public const string GroupAdminRole = "GroupAdmin";
+    public const string UserRole = "Manager";
+    public const string GroupAdminRole = "Admin";
+    public const string SuperAdminRole = "SuperAdmin";
+
     public static readonly string[] AppRoles = [LeadRole, UserRole, GroupAdminRole];
-    public static string EncryptedLeadRole { get; set; }=string.Empty;
-    public static string EncryptedUserRole { get; set; } = string.Empty;
-    public static string EncryptedGroupAdminRole { get; set; } = string.Empty;
-    public static string[] EncryptedAppRoles { get; set; } =default!;
+    public static string[] EncryptedAppRoles { get; set; } = new string[AppRoles.Length];
+    //public static string EncryptedLeadRole { get; set; }=string.Empty;
+    //public static string EncryptedUserRole { get; set; } = string.Empty;
+    //public static string EncryptedGroupAdminRole { get; set; } = string.Empty;
+    public static Dictionary<string,string> EncryptedAppRolesDictionary { get; set; } =new();
 
 
     #endregion
@@ -66,6 +80,13 @@ public static class AppConstants
     #region DataBase Helpers
 
     public const string EcoTechDataBase = "EcoTechDataBase";
+
+    //Not In USE From Here
+    public static string[] EchotechSqlFilePath = ["wwwroot","Echotech.sql"];
+    public static string[] EchotechSqlFilePathForContainer = ["app"];
+    public static string[] DataBaseSaperaters { get; } = ["GO\r\n", "GO ", "GO\t"];
+    //Till here
+   
     public static PropertyInfo[][] SpRequestPropertyInfoCache { get; set; } = default!;
     public static PropertyInfo[][] SpResponsePropertyInfoCache { get; set; } = default!;
     public static Type ListType { get; } = typeof(List<>);

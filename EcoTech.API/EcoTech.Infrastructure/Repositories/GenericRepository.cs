@@ -86,6 +86,7 @@ public class GenericRepository:IGenericRepository
            
         }
     }
+
     public async Task<List<IDbResponse>[]> ExecuteSpToObjects(string spName, string dbName = default!,
         bool spNeedParameters = true, DomainAppConstants.SpResponse[] returnObjects = default!, object spEntity = default!, 
         List<SqlParameter> param = default!)
@@ -99,8 +100,8 @@ public class GenericRepository:IGenericRepository
         {
             dbName = _applicationManager.GetConnectionString(dbName);
         }
-        List<IDbResponse>[] allTables = new List<IDbResponse>[returnObjects == null ? 1 : returnObjects.Length + 1];
-        GenericDbResponse genericDbResponse = new();
+        List<IDbResponse>[] allTables = new List<IDbResponse>[returnObjects == null ? 1 : returnObjects.Length];
+        
         try
         {
             using (SqlConnection connection = new SqlConnection(dbName))
@@ -112,13 +113,15 @@ public class GenericRepository:IGenericRepository
                     command.Parameters.AddRange(param != null ? param.ToArray() : Array.Empty<SqlParameter>());
                     if (returnObjects == null)
                     {
+                        GenericDbResponse genericDbResponse = new();
                         genericDbResponse.NumberOfRowsAffected = await command.ExecuteNonQueryAsync();
+                        allTables[0] = new List<IDbResponse>() { genericDbResponse };
                     }
                     else
                     {
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            for (int i = 0; i < returnObjects.Length; i++)
+                            for (int i = 0; i < returnObjects.Length && reader.HasRows; i++)
                             {
 
                                 int objectTypeIndex = (int)returnObjects[i];
@@ -171,13 +174,13 @@ public class GenericRepository:IGenericRepository
                                     }
                                     list.Add(dbResponseObject);
                                 }
-                                allTables[i + 1] = list;
-                                reader.NextResult();
+                                allTables[i] = list;
+                               reader.NextResult();
                             }
 
                         }
                     }
-                    allTables[0] = new List<IDbResponse>() { genericDbResponse };
+                    
 
                 }
             }
@@ -210,7 +213,7 @@ public class GenericRepository:IGenericRepository
         {
             spParamModel = (DomainAppConstants.SpRequest)Enum.Parse(DomainAppConstants.SpRequestEnumType, obj.GetType().BaseType!.Name);
         }
-
+        
         List<SqlParameter> paramList = new();
         int srNo = (int)spParamModel;
         PropertyInfo[] spParameters = AppConstants.SpRequestPropertyInfoCache[srNo];

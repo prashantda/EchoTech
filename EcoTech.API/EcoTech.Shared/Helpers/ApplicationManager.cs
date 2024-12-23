@@ -22,11 +22,26 @@ public class ApplicationManager:IApplicationManager
         AppSettings = appSettings.Value;
         _configuration = configuration;
         _memoryCache = memoryCache;
+
+        if (AppSettings.Configuration.UseEnvironmentalConnectionStrings.Equals(AppConstants.True))
+        {
+           AppSettings.ConnectionStrings.EcoTech =
+           string.Format(AppConstants.GenericConnectionString,
+           Environment.GetEnvironmentVariable(AppConstants.EchoTechServerEnvironmentName),
+           Environment.GetEnvironmentVariable(AppConstants.EchoTechDataBaseEnvironmentName),
+           Environment.GetEnvironmentVariable(AppConstants.EchoTechUserIdEnvironmentName),
+           Environment.GetEnvironmentVariable(AppConstants.EchoTechPasswordEnvironmentName));
+        }
     }
 
     public string GetConnectionString(string dbName=default!)
     {
-        dbName = dbName ?? AppConstants.EcoTechDataBase;
-        return AppSettings.ConnectionStrings.EcoTech;
+
+
+        return dbName switch
+        {
+            
+            _=> AppSettings.ConnectionStrings.EcoTech
+        };
     }
 }

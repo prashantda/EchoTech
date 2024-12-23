@@ -1,0 +1,155 @@
+CREATE  TABLE EchoTech_Clients(
+	ClientId int IDENTITY(1,1) NOT NULL,
+	Name nvarchar(200) NOT NULL,
+	Address nvarchar(400) NULL,
+	GSTIN_or_PAN nvarchar(15) NULL,
+	MobileNumber bigint NOT NULL ,
+	ClientEmail varchar(159) NULL,
+	IsActive bit NOT Null,
+	FreeTrialAvailed bit not null default 0,
+	 CONSTRAINT PK_EchoTech_Clients_ClientId Primary Key  (ClientId),
+	 Constraint Unique_EchoTech_Clients_MobileNumber Unique (MobileNumber))
+
+
+=========================================================================================
+
+USE [EchoTech]
+GO
+/****** Object:  StoredProcedure [dbo].[USP_Client_SignUp]    Script Date: 23-12-2024 10.26.37 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[USP_Client_SignUp](
+@ClientMobileNumber bigint,
+@ClientName nvarchar(200) ,
+@ClientEmail nvarchar(200)=null ,
+@UserMobileNumber bigint,
+@Name nvarchar(100)=NULL,
+@UserEmail nvarchar(100)=null,
+@Address nvarchar(400) =null,
+@GSTIN nvarchar(15)= null)
+As
+Begin
+	If @ClientMobileNumber is null or @ClientName is null or @UserMobileNumber is null
+	Begin 
+		Select 0 As Result, 'Parameters can not be null' As Message
+		Return;
+	End 
+	 IF EXISTS (SELECT 1 FROM EchoTech_Clients WHERE MobileNumber = @ClientMobileNumber and IsActive=1) OR 
+	EXISTS (SELECT 1 FROM EchoTech_Users WHERE MobileNumber = @UserMobileNumber and IsActive=1)
+	Begin 
+		Select 0 As Result, 'Client or User with given Mobile Number already exists' As Message
+		Return;
+	End 
+
+	Begin Try
+		Begin Transaction;
+				Insert into EchoTech_Clients (MobileNumber,Name,Address,GSTIN_or_PAN,ClientEmail,IsActive) 
+				values (@ClientMobileNumber,@ClientName,@Address,@GSTIN,@ClientEmail,1);
+				Declare @NewClientId int=SCOPE_IDENTITY();
+				Insert into EchoTech_Users (ClientId,Name,MobileNumber,IsActive,UserEmail) values 
+						(@NewClientId,@Name,@UserMobileNumber,1,@UserEmail);
+				Declare @NewUserId bigint = SCOPE_IDENTITY();
+				Insert Into EchoTech_User_Roles (UserId,RoleId) values (@NewUserId,2);
+				Insert Into EchoTech_User_Roles (UserId,RoleId) values (@NewUserId,3);
+
+		Commit Transaction;
+		Select 1 As Result, 'Client Added Successfuly' As Message;
+	End Try
+	Begin Catch
+		Rollback Transaction;
+		Select 0 As Result, Error_Message() As Message
+	End Catch
+END
+
+========================================================================================
+
+
+
+USE [EchoTech]
+GO
+/****** Object:  StoredProcedure [dbo].[USP_Check_User_Availability]    Script Date: 23-12-2024 10.31.04 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+--USP_Check_User_Availability 9834931521,'UserRegistration'
+
+ALTER Procedure [dbo].[USP_Check_User_Availability](
+@UserUniqueId nvarchar(159),
+@Operation nvarchar(31))
+AS
+Begin
+		If @UserUniqueId is Null
+		Begin
+		Select 0 As Result, 'Please provide valid Mobile Number' As Message;
+		Return;
+		End
+		 
+		Begin Try
+		If @Operation = 'UserMobileRegistration'
+		Begin
+
+			If Exists(Select * from EchoTech_Users where MobileNumber=@UserUniqueId)
+			Begin
+			Select 0 As Result, 'Mobile number already registered' As Message;
+			Return;
+			End
+
+			Select 1 As Result, 'Mobile number is available for registration' As Message;
+			Return;
+		End
+		
+		If @Operation = 'UserEmailRegistration'
+		Begin
+
+			If Exists(Select * from EchoTech_Users where UserEmail=@UserUniqueId)
+			Begin
+			Select 0 As Result, 'Email already registered' As Message;
+			Return;
+			End
+
+			Select 1 As Result, 'Email is available for registration' As Message;
+			Return;
+		End
+
+
+		If @Operation='ClientMobileRegistration'
+		Begin
+			If Exists(Select * from EchoTech_Clients where MobileNumber=@UserUniqueId)
+			Begin
+			Select 0 As Result, 'Mobile number already registered' As Message;
+			Return;
+			End
+
+			Select 1 As Result, 'Mobile number is available for registration' As Message;
+			Return;
+		End
+		If @Operation = 'ClientEmailRegistration'
+		Begin
+
+			If Exists(Select * from EchoTech_Clients where ClientEmail=@UserUniqueId)
+			Begin
+			Select 0 As Result, 'Email already registered' As Message;
+			Return;
+			End
+
+			Select 1 As Result, 'Email is available for registration' As Message;
+			Return;
+		End
+		End Try
+		Begin Catch
+		Select 0 As Result, ERROR_MESSAGE() As Message;		
+
+		End Catch
+		Select 0 As Result, 'Please provide valid registration role' As Message;
+End
+
+
+
+
+
+
+
+

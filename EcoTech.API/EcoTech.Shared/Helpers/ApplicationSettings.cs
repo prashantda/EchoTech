@@ -18,8 +18,11 @@ public class AS_Secrets
 public class AS_Configuration
 {
     public string UseDynamicSecrets { get; set; }
-  
-    
+    public string UseAppSettingsConnectionStrings { get; set; }
+    public string UseKeyVaultConnectionStrings { get; set; }
+    public string UseEnvironmentalConnectionStrings { get; set; }
+
+
 }
 public class AS_ConnectionStrings
 {

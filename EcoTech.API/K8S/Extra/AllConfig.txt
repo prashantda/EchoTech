@@ -1,0 +1,21 @@
+& minikube docker-env --shell powershell | Invoke-Expression        ============This command configures your local environment to use Minikube's Docker daemon from Command Prompt (CMD).
+
+choco install docker-cli -y
+
+cd P:\PRASHANT\Study\Code\EchoTech\EcoTech.API\K8S
+
+minikube start --memory=3072
+
+kubectl apply -f secrets.yml,mssql-configmap.yml
+
+kubectl apply -f mssql-statefulset.yml
+
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass         --- bypass policy for this session to execute below file
+./configuration.ps1                       ----- to set minikube ip in hosts file
+
+apt-get update && apt-get install -y mssql-tools unixodbc-dev  ------ install cmd for mssql
+
+find / -name sqlcmd
+export PATH=$PATH:/opt/mssql-tools/bin        ----   Set environment path for cmd
+
+sqlcmd -S localhost -U SA -P EchoTech@123      ----- login to mssql from cmd

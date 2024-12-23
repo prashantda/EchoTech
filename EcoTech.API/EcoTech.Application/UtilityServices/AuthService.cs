@@ -64,18 +64,23 @@ public class AuthService: IAuthService
         return sr.ReadToEnd();
     }
 
-    public string CreateJwtToken(int validForMinutes = 1, string[] roles = default!, string[] evenNoOfClaimsInfo = default!)
+    public string CreateJwtToken(int validForMinutes = 15, string[] roles = default!, string[] evenNoOfClaimsInfo = default!)
     {
         Claim[] claims = evenNoOfClaimsInfo == null? Array.Empty<Claim>():new Claim[evenNoOfClaimsInfo.Length/2];
         for (int i = 0; i < claims.Length; i=i+2)
         {
             claims[i] = new Claim(evenNoOfClaimsInfo![i], EncryptString(evenNoOfClaimsInfo[i + 1]));
         }
+        
+        for(int j = 0; roles != null && j < roles.Length;j++)
+        {
+            roles[j]=AppConstants.EncryptedAppRolesDictionary[roles[j]];
+        }
         return JwtBearer.CreateToken(options =>
         {
             options.SigningKey = JwtSigningKey;
             options.ExpireAt = DateTime.UtcNow.AddMinutes(validForMinutes);
-            options.User.Roles.AddRange(roles??Array.Empty<string>());
+            options.User.Roles.AddRange(roles ?? Array.Empty<string>());
             options.User.Claims.AddRange (claims);
         });
     }

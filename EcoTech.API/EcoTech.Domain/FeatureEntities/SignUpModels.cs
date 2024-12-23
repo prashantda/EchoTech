@@ -16,11 +16,11 @@ public class SignUpRequestDtoValidator : Validator<SignUpRequestDto>
             WithMessage(AppConstants.EnglishLangErrorMessage).
             Length(2, 200).
             WithMessage(string.Format(AppConstants.LengthErrorMessage, 2, 200));
-        RuleFor(x => x.ClientMobileNumber).
+       /* RuleFor(x => x.ClientMobileNumber).
             NotEmpty().
             WithMessage(AppConstants.EmptyErrorMessage).
             Matches(AppConstants.MobileNumberRegex).
-            WithMessage(AppConstants.MobileNumberRegexErrorMessage);
+            WithMessage(AppConstants.MobileNumberRegexErrorMessage);*/
         RuleFor(x => x.UserMobileNumber).
             NotEmpty().
             WithMessage(AppConstants.EmptyErrorMessage).
@@ -49,9 +49,9 @@ public class SignUpRequestDtoValidator : Validator<SignUpRequestDto>
           Matches(AppConstants.EmailRegex).
           WithMessage(AppConstants.EmailErrorMessage).
           When(x => !string.IsNullOrWhiteSpace(x.UserEmail));
-        RuleFor(x => x.ClientEmail).
+        /*RuleFor(x => x.ClientEmail).
           Matches(AppConstants.EmailRegex).
           WithMessage(AppConstants.EmailErrorMessage).
-          When(x => !string.IsNullOrWhiteSpace(x.ClientEmail));
+          When(x => !string.IsNullOrWhiteSpace(x.ClientEmail));*/
     }
 }

@@ -12,4 +12,10 @@
     <ProjectReference Include="..\EcoTech.Infrastructure\EcoTech.Infrastructure.csproj" />
   </ItemGroup>
 
+
+ 
+  <ItemGroup>
+    <None Include="wwwroot\Echotech.sql" />
+  </ItemGroup>
+
 </Project>

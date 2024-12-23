@@ -21,6 +21,10 @@ public static class RegisterServices
           
         });
 
+       
+
+
+
         #region DependencyInjection
         services.AddSingleton<IApplicationManager, ApplicationManager>();
         services.AddSingleton<IMapper,MapperlyMappings>();
@@ -42,6 +46,19 @@ public static class RegisterServices
         }).AddHttpMessageHandler<PostManHeaders>();
 
         #endregion
-        return services;
+
+        #region 
+
+        #endregion
+        return services;//.ConfigureApplicationOnce(configuration);
     }
+    /*public static IServiceCollection ConfigureApplicationOnce(this IServiceCollection services,
+       IConfiguration configuration)
+    {
+       
+        #region 
+        services.bui
+        #endregion
+        return services;
+    }*/
 }

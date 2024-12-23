@@ -4,8 +4,7 @@ namespace EcoTech.API.Features.Users;
 
 public class SendOtp: Endpoint<OtpRequestDto, Response<OtpResponseDto>>
 {
-     
-  
+    
     public override void Configure()
     {
         Post(AppConstants.SendOtpURL);

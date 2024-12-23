@@ -3,6 +3,8 @@
 
 
 
+using Microsoft.Extensions.Configuration;
+
 namespace EcoTech.API.StartupExtentions;
 public static class ApplicationBuilder
 {
@@ -54,15 +56,22 @@ public static class ApplicationBuilder
 
         #endregion
 
-        return services.ConfigureOnce(configuration, configurationBuilder);
+        return services.ConfigureAPIOnce(configuration, configurationBuilder);
 
     }
-    private static IServiceCollection ConfigureOnce(this IServiceCollection services, IConfiguration configuration, IConfigurationBuilder configurationBuilder)
+    private static IServiceCollection ConfigureAPIOnce(this IServiceCollection services, IConfiguration configuration, IConfigurationBuilder configurationBuilder)
     {
-        AppConstants.EncryptedLeadRole = EncryptString(configuration,AppConstants.LeadRole);
-        AppConstants.EncryptedUserRole = EncryptString(configuration, AppConstants.UserRole);
-        AppConstants.EncryptedGroupAdminRole = EncryptString(configuration, AppConstants.GroupAdminRole);
-        AppConstants.EncryptedAppRoles = [AppConstants.EncryptedLeadRole, AppConstants.EncryptedUserRole, AppConstants.EncryptedGroupAdminRole];
+        int j = 0;
+        foreach (string role in AppConstants.AppRoles) 
+        {
+            string encryptedRole = EncryptString(configuration, role);
+            AppConstants.EncryptedAppRolesDictionary.Add(role, encryptedRole);
+            AppConstants.EncryptedAppRoles[j++] = encryptedRole;
+        }
+        //AppConstants.EncryptedLeadRole = EncryptString(configuration,AppConstants.LeadRole);
+        //AppConstants.EncryptedUserRole = EncryptString(configuration, AppConstants.UserRole);
+        //AppConstants.EncryptedGroupAdminRole = EncryptString(configuration, AppConstants.GroupAdminRole);
+        //AppConstants.EncryptedAppRoles = [AppConstants.EncryptedLeadRole, AppConstants.EncryptedUserRole, AppConstants.EncryptedGroupAdminRole];
 
         #region DB Configuration
         AppConstants.SpResponsePropertyInfoCache = new PropertyInfo[Enum.GetValues(typeof(DomainAppConstants.SpResponse)).Length][];
@@ -90,7 +99,7 @@ public static class ApplicationBuilder
     private static string EncryptString(IConfiguration configuration,string plainText)
     {
         using Aes aes = Aes.Create();
-        if (configuration.GetSection(AppConstants.UseDynamicSecretsSection).Value.
+        if (configuration.GetSection(AppConstants.UseDynamicSecretsSection).Value!.
                                     Equals(AppConstants.True))
         {
             aes.Key = AppConstants.DynamicEncryptionKey;

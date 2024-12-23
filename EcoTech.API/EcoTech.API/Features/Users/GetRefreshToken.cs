@@ -8,7 +8,7 @@ public class GetRefreshToken : EndpointWithoutRequest<Response<RefreshTokenRespo
     public override void Configure()
     {
         Post(AppConstants.GetRefreshTokenURL);
-        Roles(AppConstants.EncryptedAppRoles);
+        Roles(AppConstants.EncryptedAppRolesDictionary.Values.ToArray());
         Throttle(hitLimit: 1, durationSeconds: 600);
     }
 
