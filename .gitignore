@@ -15,3 +15,8 @@
 /EcoTech.API/.vs/ProjectEvaluation
 /EcoTech.API/EcoTech.Shared/bin/Debug/net8.0
 /EcoTech.API/EcoTech.Shared/obj
+/EcoTech.API/EcoTech.Domain/bin/Release/net8.0
+/EcoTech.API/EcoTech.Infrastructure/bin/Release/net8.0
+/EcoTech.API/EcoTech.Shared/bin/Release/net8.0
+/EcoTech.API/EcoTech.API/bin/Release/net8.0
+/EcoTech.API/EcoTech.Application/bin/Release/net8.0
