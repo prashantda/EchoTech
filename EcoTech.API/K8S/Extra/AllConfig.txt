@@ -6,7 +6,7 @@ cd P:\PRASHANT\Study\Code\EchoTech\EcoTech.API\K8S
 
 minikube start --memory=3072
 
-kubectl apply -f secrets.yml,mssql-configmap.yml
+kubectl apply -f secrets.yml
 
 kubectl apply -f mssql-statefulset.yml
 
@@ -19,3 +19,5 @@ find / -name sqlcmd
 export PATH=$PATH:/opt/mssql-tools/bin        ----   Set environment path for cmd
 
 sqlcmd -S localhost -U SA -P EchoTech@123      ----- login to mssql from cmd
+
+kubectl exec -it pod/echotech-api-depl-b44995f75-2pp4n -- sh

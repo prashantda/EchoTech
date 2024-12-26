@@ -13,8 +13,10 @@ spec:
         app: echotechapiservice
     spec:
       containers:
-        - name: echotechservice
-          image: prashantdarade1697/echotechapiservice
+        - name: echotechapiservice
+          image: prashantadarade/echotech-api
+          ports:
+          - containerPort: 8080
           resources:
             requests:
               memory: "512Mi"       
@@ -24,12 +26,12 @@ spec:
               cpu: "1"  
           env:
           - name: EchoTechServer
-            value: "mssql-clusterip"
+            value: "mssql-clusterip-headless-service"
           - name: EchoTechDataBase
             value: "EchoTech"
           - name: EchoTechUserId
             value: "SA"                 
-          - name: PASSWORD
+          - name: EchoTechPassword
             valueFrom:
               secretKeyRef:
                 name: mssql-secrets
@@ -45,10 +47,10 @@ spec:
   selector:
     app: echotechapiservice
   ports:
-   - name: echotechapiservice
+   - name: echotechapiserviceclusterport
      protocol: TCP
-     port: 80
-     targetPort: 80
+     port: 8080
+     targetPort: 8080
 
 ---
 apiVersion: v1
@@ -60,7 +62,9 @@ spec:
   selector:
     app: echotechapiservice
   ports:
-    - name: echotechapiservice
+    - name: echotechapiservicenodeportport
       protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 8080
+      targetPort: 8080
+      nodePort: 30001
+      
